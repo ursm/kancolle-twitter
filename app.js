@@ -1,89 +1,54 @@
-var ntwitter = require('ntwitter');
-var request = require('request');
-var _ = require('lodash');
+var ntwitter = require('ntwitter'),
+    request  = require('request');
 
-var env = process.env;
-var parts = env.TWITTER_AUTH.split(':');
+var parts    = process.env.TWITTER_AUTH.split(':'),
+    endpoint = process.env.HOOK_ENDPOINT;
+
 var config = {
-  consumer_key: parts[0],
-  consumer_secret: parts[1],
-  access_token_key: parts[2],
+  consumer_key:        parts[0],
+  consumer_secret:     parts[1],
+  access_token_key:    parts[2],
   access_token_secret: parts[3]
 };
+
 twitter = new ntwitter(config);
 
-function notify(url, message, callback) {
-  request.post(
-    url,
-    {
-      form: message
-    },
-    callback
-  );
+function build_source(data) {
+  var screen_name = data.user.screen_name;
+
+  // TODO user.name をエスケープ
+  // text はすでにエスケープ済み
+  var message = '<img height="16" width="16" src="' + data.user.profile_image_url_https + '">';
+  message += ' <b>' + data.user.name + '</b>';
+  message += ' (<a href="https://twitter.com/' + screen_name + '">@' + screen_name + '</a>)<br>';
+  message += '<p>' + data.text;
+  message += ' (<a href="https://twitter.com/' + screen_name + '/status/' + data.id_str + '">show</a>)</p>';
+  return message;
 }
 
-if (!env.TRACK) {
-  throw 'Environment variable TRACK must be set';
-}
-console.log('TRACK: %s', env.TRACK);
+function notify(data) {
+  var source = build_source(data);
 
-var params = {
-  track: env.TRACK
-};
-
-var hookConfigurations = [];
-_(env).forEach(function(value, key) {
-  if (!key.match(/^HOOK_/)) {
-    return;
-  }
-
-  var matched = value.match(/^(.+?)(?:#(.+))?$/);
-  if (!matched) {
-    throw('Error in hook configuration ' + key);
-  }
-
-  var url = matched[1];
-  var query = matched[2];
-
-  hookConfigurations.push([url, query]);
-});
-
-console.log('Hook Configurations: %j', hookConfigurations);
-
-twitter.stream('statuses/filter', params, function(stream) {
-  stream.on('data', function(data) {
-    var text = '';
-    text += '@' + data.user.screen_name + ' (' + data.user.name + ') tweeted:\n';
-    text += data.text + '\n';
-    text += 'https://twitter.com/' + data.user.screen_name + '/status/' + data.id_str;
-    console.log(text);
-
-    if (data.retweeted_status) {
-      console.log('Skip retweet');
-      return;
+  request.post(endpoint, {
+    form: {
+      source: source,
+      format: 'html'
     }
+  }, function(error, response, body){
+    // do nothing...
+  });
+}
 
-    var message = {
-      source: text
-    };
-
-    _(hookConfigurations).forEach(function(hook) {
-      var hookUrl = hook[0];
-      var query = hook[1];
-      var matched = false;
-      if (!query) {
-        matched = true;
-      } else {
-        var regexp = new RegExp(query, 'i');
-        matched = regexp.test(data.text);
+twitter.stream('user', {track: 'hrysd'}, function(stream) {
+  stream.on('data', function(data) {
+    if (data.user) {
+      if (['Kancolle_STAFF', 'kancollect'].indexOf(data.user.screen_name) != -1) {
+        notify(data);
       }
-      if (matched) {
-        notify(hookUrl, message);
-      }
-    });
+    }
   });
 
   stream.on('error', function(error, data) {
-    throw error + ':' + data;
+    console.log(error, data);
   });
 });
