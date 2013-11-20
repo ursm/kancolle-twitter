@@ -16,14 +16,13 @@ twitter = new ntwitter(config);
 function build_source(data) {
   var screen_name = data.user.screen_name;
 
-  // TODO user.name をエスケープ
-  // text はすでにエスケープ済み
-  var message = '<img height="16" width="16" src="' + data.user.profile_image_url_https + '">';
-  message += ' <b>' + data.user.name + '</b>';
-  message += ' (<a href="https://twitter.com/' + screen_name + '">@' + screen_name + '</a>)<br>';
-  message += '<p>' + data.text;
-  message += ' (<a href="https://twitter.com/' + screen_name + '/status/' + data.id_str + '">show</a>)</p>';
-  return message;
+  // TODO data.user.name をエスケープ data.text はすでにエスケープ済み
+  var source = '<img height="16" width="16" src="' + data.user.profile_image_url_https + '">';
+  source += ' <b>' + data.user.name + '</b>';
+  source += ' (<a href="https://twitter.com/' + screen_name + '">@' + screen_name + '</a>)<br>';
+  source += '<p>' + data.text;
+  source += ' (<a href="https://twitter.com/' + screen_name + '/status/' + data.id_str + '">show</a>)</p>';
+  return source;
 }
 
 function notify(data) {
