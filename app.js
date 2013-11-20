@@ -42,7 +42,7 @@ function notify(data) {
 twitter.stream('user', {track: 'hrysd'}, function(stream) {
   stream.on('data', function(data) {
     if (data.user) {
-      if (['Kancolle_STAFF', 'kancollect'].indexOf(data.user.screen_name) != -1) {
+      if (['KanColle_STAFF', 'kancollect'].indexOf(data.user.screen_name) != -1) {
         notify(data);
       }
     }
