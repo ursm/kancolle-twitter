@@ -38,13 +38,12 @@ function notify(data) {
   });
 }
 
-twitter.stream('user', {track: 'hrysd'}, function(stream) {
+twitter.stream('statuses/filter', {follow: '294025417, 1531644798'}, function(stream) {
   stream.on('data', function(data) {
-    if (data.user) {
-      if (['KanColle_STAFF', 'kancollect'].indexOf(data.user.screen_name) != -1) {
-        notify(data);
-      }
-    }
+    if (data.retweeted_status) return;
+    if (data.in_reply_to_user_id) return;
+
+    notify(data);
   });
 
   stream.on('error', function(error, data) {
