@@ -1,52 +1,43 @@
-var ntwitter = require('ntwitter'),
-    request  = require('request');
+const ntwitter = require('ntwitter');
+const request  = require('request');
 
-var parts    = process.env.TWITTER_AUTH.split(':'),
-    endpoint = process.env.HOOK_ENDPOINT;
+const [consumer_key, consumer_secret, access_token_key, access_token_secret] = process.env.TWITTER_AUTH.split(':');
+const endpoint                                                               = process.env.HOOK_ENDPOINT;
 
-var config = {
-  consumer_key:        parts[0],
-  consumer_secret:     parts[1],
-  access_token_key:    parts[2],
-  access_token_secret: parts[3]
-};
+const twitter = new ntwitter({consumer_key, consumer_secret, access_token_key, access_token_secret});
 
-twitter = new ntwitter(config);
+function notify({user: {name, screen_name, profile_image_url_https}, text, extended_tweet, id_str}) {
+  // TODO name をエスケープ data.text はすでにエスケープ済み
 
-function build_source(data) {
-  var screen_name = data.user.screen_name;
+  if (extended_tweet) {
+    text = extended_tweet.full_text;
+  }
 
-  // TODO data.user.name をエスケープ data.text はすでにエスケープ済み
-  var source = '<img height="16" width="16" src="' + data.user.profile_image_url_https + '">';
-  source += ' <b>' + data.user.name + '</b>';
-  source += ' (<a href="https://twitter.com/' + screen_name + '">@' + screen_name + '</a>)<br>';
-  source += '<p>' + data.text;
-  source += ' (<a href="https://twitter.com/' + screen_name + '/status/' + data.id_str + '">show</a>)</p>';
-  return source;
-}
-
-function notify(data) {
-  var source = build_source(data);
+  const source = `
+<img height="16" width="16" src="${profile_image_url_https}">
+<b>${name}</b> (<a href="https://twitter.com/${screen_name}">@${screen_name}</a>)<br>
+<p>${text} (<a href="https://twitter.com/${screen_name}/status/${id_str}">show</a>)</p>
+  `.trim();
 
   request.post(endpoint, {
     form: {
-      source: source,
+      source,
       format: 'html'
     }
-  }, function(error, response, body){
+  }, () => {
     // do nothing...
   });
 }
 
-twitter.stream('statuses/filter', {follow: '294025417'}, function(stream) {
-  stream.on('data', function(data) {
-    if (data.retweeted_status) return;
-    if (data.in_reply_to_user_id) return;
+twitter.stream('statuses/filter', {follow: '294025417', tweet_mode: 'extended'}, (stream) => {
+  stream.on('data', (data) => {
+    if (data.retweeted_status)    { return; }
+    if (data.in_reply_to_user_id) { return; }
 
     notify(data);
   });
 
-  stream.on('error', function(error, data) {
+  stream.on('error', (error, data) => {
     console.log(error, data);
   });
 });
