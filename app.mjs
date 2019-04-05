@@ -57,3 +57,9 @@ stream.on('error', (e) => {
   console.error(e);
   Sentry.captureException(e);
 });
+
+for (const event of ['connect', 'connected', 'reconnect']) {
+  stream.on(event, () => {
+    console.log(event);
+  });
+}
