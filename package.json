@@ -10,7 +10,7 @@
     "start": "node --experimental-modules app.mjs"
   },
   "author": "Yoji Shidara",
-  "license": "BSD",
+  "license": "MIT",
   "dependencies": {
     "handlebars": "^4.1.1",
     "node-fetch": "^2.3.0",
