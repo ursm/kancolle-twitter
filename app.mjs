@@ -8,10 +8,10 @@ Sentry.init();
 const template = Handlebars.compile(`
   <img height="16" width="16" src="{{user.profile_image_url_https}}">
   <b>{{user.name}}</b> (<a href="https://twitter.com/{{user.screen_name}}">@{{user.screen_name}}</a>)<br>
-  <p>{{{text}}} (<a href="https://twitter.com/{{user.screen_name}}/status/{{id_str}}">link</a>)</p>
+  <p>{{{text}}} (<a href="https://twitter.com/{{user.screen_name}}/status/{{id}}">link</a>)</p>
 `);
 
-const kancolleStaffID = '294025417';
+const kancolleStaffID = 294025417;
 
 const [
   consumer_key,
@@ -21,14 +21,18 @@ const [
 ] = process.env.TWITTER_AUTH.split(':');
 
 const twitter = new Twitter({consumer_key, consumer_secret, access_token_key, access_token_secret});
-const filter  = process.env.DEBUG ? {track: 'javascript'} : {follow: kancolleStaffID};
-const stream  = twitter.stream('statuses/filter', Object.assign(filter, {tweet_mode: 'extended'}));
+
+const stream = twitter.stream('statuses/filter', {
+  follow:     kancolleStaffID.toString(),
+  tweet_mode: 'extended'
+});
 
 stream.on('data', async (tweet) => {
   try {
-    if (tweet.retweeted_status) { return; }
+    if (tweet.user.id !== kancolleStaffID) { return; }
+    if (tweet.retweeted_status)            { return; }
 
-    switch (tweet.in_reply_to_user_id_str) {
+    switch (tweet.in_reply_to_user_id) {
       case null:
       case undefined:
       case kancolleStaffID:
