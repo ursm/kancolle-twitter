@@ -1,6 +1,6 @@
-import Sentry from '@sentry/node';
 import Handlebars from 'handlebars';
-import Twitter from 'twitter';
+import Sentry from '@sentry/node';
+import Twit from 'twit';
 import fetch from 'node-fetch';
 
 Sentry.init();
@@ -11,23 +11,21 @@ const template = Handlebars.compile(`
   <p>{{{text}}} (<a href="https://twitter.com/{{user.screen_name}}/status/{{id}}">link</a>)</p>
 `);
 
+const twitter = new Twit({
+  consumer_key:        process.env.TWITTER_CONSUMER_KEY,
+  consumer_secret:     process.env.TWITTER_CONSUMER_SECRET,
+  access_token:        process.env.TWITTER_ACCESS_TOKEN,
+  access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
+});
+
 const kancolleStaffID = 294025417;
-
-const [
-  consumer_key,
-  consumer_secret,
-  access_token_key,
-  access_token_secret
-] = process.env.TWITTER_AUTH.split(':');
-
-const twitter = new Twitter({consumer_key, consumer_secret, access_token_key, access_token_secret});
 
 const stream = twitter.stream('statuses/filter', {
   follow:     kancolleStaffID.toString(),
   tweet_mode: 'extended'
 });
 
-stream.on('data', async (tweet) => {
+stream.on('tweet', async (tweet) => {
   try {
     if (tweet.user.id !== kancolleStaffID) { return; }
 
@@ -46,6 +44,8 @@ stream.on('data', async (tweet) => {
       })
     });
   } catch (e) {
+    console.error(e);
+
     Sentry.withScope((scope) => {
       scope.setExtra('tweet', tweet);
       Sentry.captureException(e);
@@ -54,5 +54,6 @@ stream.on('data', async (tweet) => {
 });
 
 stream.on('error', (e) => {
+  console.error(e);
   Sentry.captureException(e);
 });
