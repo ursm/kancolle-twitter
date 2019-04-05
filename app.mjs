@@ -30,29 +30,21 @@ const stream = twitter.stream('statuses/filter', {
 stream.on('data', async (tweet) => {
   try {
     if (tweet.user.id !== kancolleStaffID) { return; }
-    if (tweet.retweeted_status)            { return; }
 
-    switch (tweet.in_reply_to_user_id) {
-      case null:
-      case undefined:
-      case kancolleStaffID:
-        if (tweet.extended_tweet) {
-          tweet.text = tweet.extended_tweet.full_text;
-        }
-
-        await fetch(process.env.HOOK_ENDPOINT, {
-          method: 'post',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            source: template(tweet),
-            format: 'html'
-          })
-        });
-      default:
-        // do nothing
+    if (tweet.extended_tweet) {
+      tweet.text = tweet.extended_tweet.full_text;
     }
+
+    await fetch(process.env.HOOK_ENDPOINT, {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        source: template(tweet),
+        format: 'html'
+      })
+    });
   } catch (e) {
     Sentry.withScope((scope) => {
       scope.setExtra('tweet', tweet);
