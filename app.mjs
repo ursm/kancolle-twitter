@@ -41,20 +41,22 @@ stream.on('tweet', async (tweet) => {
   });
 });
 
-for (const event of ['connect', 'connected']) {
-  stream.on(event, () => {
-    console.log(event);
+function log(stream, event, func = () => []) {
+  stream.on(event, (...args) => {
+    console.log(event, ...Array.of(func(...args)).flat());
   });
 }
 
-stream.on('reconnect', (req, res, interval) => {
-  console.log('reconnect', interval);
-});
-
-stream.on('disconnect', (msg) => {
-  console.log('disconnect', msg);
-});
+log(stream, 'connect');
+log(stream, 'connected');
+log(stream, 'reconnect', (req, res, interval) => interval);
+log(stream, 'disconnect', (msg) => msg);
 
 stream.on('error', (e) => {
   console.error(e);
+});
+
+process.on('SIGTERM', () => {
+  stream.stop();
+  process.exit(0);
 });
