@@ -15,15 +15,15 @@ const twitter = new Twit({
   access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
 });
 
-const kancolleStaffID = 294025417;
+const userId = Number.parseInt(process.env.TWITTER_USER_ID, 10);
 
 const stream = twitter.stream('statuses/filter', {
-  follow:     kancolleStaffID.toString(),
+  follow:     userId.toString(),
   tweet_mode: 'extended'
 });
 
 stream.on('tweet', async (tweet) => {
-  if (tweet.user.id !== kancolleStaffID) { return; }
+  if (tweet.user.id !== userId) { return; }
 
   if (tweet.extended_tweet) {
     tweet.text = tweet.extended_tweet.full_text;
