@@ -1,6 +1,9 @@
+import Sentry from '@sentry/node';
 import Handlebars from 'handlebars';
 import Twitter from 'twitter';
 import fetch from 'node-fetch';
+
+Sentry.init();
 
 const [
   consumer_key,
@@ -18,35 +21,42 @@ const template = Handlebars.compile(`
 `);
 
 const twitter = new Twitter({consumer_key, consumer_secret, access_token_key, access_token_secret});
-const stream  = twitter.stream('statuses/filter', {follow: kancolleStaffID, tweet_mode: 'extended'});
-// const stream  = twitter.stream('statuses/filter', {track: 'javascript', tweet_mode: 'extended'});
+// const stream  = twitter.stream('statuses/filter', {follow: kancolleStaffID, tweet_mode: 'extended'});
+const stream  = twitter.stream('statuses/filter', {track: 'javascript', tweet_mode: 'extended'});
 
-stream.on('data', (data) => {
-  if (data.retweeted_status) { return; }
+stream.on('data', async (tweet) => {
+  try {
+    if (tweet.retweeted_status) { return; }
 
-  switch (data.in_reply_to_user_id_str) {
-    case null:
-    case undefined:
-    case kancolleStaffID:
-      if (data.extended_tweet) {
-        data.text = data.extended_tweet.full_text;
-      }
+    switch (tweet.in_reply_to_user_id_str) {
+      case null:
+      case undefined:
+      case kancolleStaffID:
+        if (tweet.extended_tweet) {
+          tweet.text = tweet.extended_tweet.full_text;
+        }
 
-      fetch(process.env.HOOK_ENDPOINT, {
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          source: template(data),
-          format: 'html'
-        })
-      });
-    default:
-      // do nothing
+        await fetch(process.env.HOOK_ENDPOINT, {
+          method: 'post',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            source: template(tweet),
+            format: 'html'
+          })
+        });
+      default:
+        // do nothing
+    }
+  } catch (e) {
+    Sentry.withScope((scope) => {
+      scope.setExtra('tweet', tweet);
+      Sentry.captureException(e);
+    });
   }
 });
 
-stream.on('error', (error, data) => {
-  console.log(error, data);
+stream.on('error', (e) => {
+  Sentry.captureException(e);
 });
