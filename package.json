@@ -3,6 +3,9 @@
   "version": "0.0.0",
   "description": "Ego-search tool for idobata.io",
   "main": "app.js",
+  "engines": {
+    "node": "11.x"
+  },
   "scripts": {
     "start": "node --experimental-modules app.mjs"
   },
