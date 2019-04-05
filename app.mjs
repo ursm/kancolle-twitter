@@ -21,8 +21,8 @@ const template = Handlebars.compile(`
 `);
 
 const twitter = new Twitter({consumer_key, consumer_secret, access_token_key, access_token_secret});
-// const stream  = twitter.stream('statuses/filter', {follow: kancolleStaffID, tweet_mode: 'extended'});
-const stream  = twitter.stream('statuses/filter', {track: 'javascript', tweet_mode: 'extended'});
+const stream  = twitter.stream('statuses/filter', {follow: kancolleStaffID, tweet_mode: 'extended'});
+// const stream  = twitter.stream('statuses/filter', {track: 'javascript', tweet_mode: 'extended'});
 
 stream.on('data', async (tweet) => {
   try {
