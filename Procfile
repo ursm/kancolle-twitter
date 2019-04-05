@@ -1,1 +1,1 @@
-worker: node --experimental-modules app.mjs
+worker: yarn start

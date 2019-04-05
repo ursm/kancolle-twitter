@@ -5,6 +5,14 @@ import fetch from 'node-fetch';
 
 Sentry.init();
 
+const template = Handlebars.compile(`
+  <img height="16" width="16" src="{{user.profile_image_url_https}}">
+  <b>{{user.name}}</b> (<a href="https://twitter.com/{{user.screen_name}}">@{{user.screen_name}}</a>)<br>
+  <p>{{{text}}} (<a href="https://twitter.com/{{user.screen_name}}/status/{{id_str}}">link</a>)</p>
+`);
+
+const kancolleStaffID = '294025417';
+
 const [
   consumer_key,
   consumer_secret,
@@ -12,17 +20,9 @@ const [
   access_token_secret
 ] = process.env.TWITTER_AUTH.split(':');
 
-const kancolleStaffID = '294025417';
-
-const template = Handlebars.compile(`
-  <img height="16" width="16" src="{{user.profile_image_url_https}}">
-  <b>{{user.name}}</b> (<a href="https://twitter.com/{{user.screen_name}}">@{{user.screen_name}}</a>)<br>
-  <p>{{{text}}} (<a href="https://twitter.com/{{user.screen_name}}/status/{{id_str}}">link</a>)</p>
-`);
-
 const twitter = new Twitter({consumer_key, consumer_secret, access_token_key, access_token_secret});
-const stream  = twitter.stream('statuses/filter', {follow: kancolleStaffID, tweet_mode: 'extended'});
-// const stream  = twitter.stream('statuses/filter', {track: 'javascript', tweet_mode: 'extended'});
+const filter  = process.env.DEBUG ? {track: 'javascript'} : {follow: kancolleStaffID};
+const stream  = twitter.stream('statuses/filter', Object.assign(filter, {tweet_mode: 'extended'}));
 
 stream.on('data', async (tweet) => {
   try {
