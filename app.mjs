@@ -43,7 +43,7 @@ stream.on('tweet', async (tweet) => {
 
 function log(stream, event, func = () => []) {
   stream.on(event, (...args) => {
-    console.log(event, ...Array.of(func(...args)).flat());
+    console.log(event, ...[func(...args)].flat());
   });
 }
 
