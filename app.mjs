@@ -1,9 +1,6 @@
 import Handlebars from 'handlebars';
-import Sentry from '@sentry/node';
 import Twit from 'twit';
 import fetch from 'node-fetch';
-
-Sentry.init();
 
 const template = Handlebars.compile(`
   <img height="16" width="16" src="{{user.profile_image_url_https}}">
@@ -26,36 +23,26 @@ const stream = twitter.stream('statuses/filter', {
 });
 
 stream.on('tweet', async (tweet) => {
-  try {
-    if (tweet.user.id !== kancolleStaffID) { return; }
+  if (tweet.user.id !== kancolleStaffID) { return; }
 
-    if (tweet.extended_tweet) {
-      tweet.text = tweet.extended_tweet.full_text;
-    }
-
-    await fetch(process.env.HOOK_ENDPOINT, {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        source: template(tweet),
-        format: 'html'
-      })
-    });
-  } catch (e) {
-    console.error(e);
-
-    Sentry.withScope((scope) => {
-      scope.setExtra('tweet', tweet);
-      Sentry.captureException(e);
-    });
+  if (tweet.extended_tweet) {
+    tweet.text = tweet.extended_tweet.full_text;
   }
+
+  await fetch(process.env.HOOK_ENDPOINT, {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      source: template(tweet),
+      format: 'html'
+    })
+  });
 });
 
 stream.on('error', (e) => {
   console.error(e);
-  Sentry.captureException(e);
 });
 
 for (const event of ['connect', 'connected', 'reconnect']) {
