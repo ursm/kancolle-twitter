@@ -29,12 +29,21 @@ function notify({user: {name, screen_name, profile_image_url_https}, text, exten
   });
 }
 
-twitter.stream('statuses/filter', {follow: '294025417', tweet_mode: 'extended'}, (stream) => {
-  stream.on('data', (data) => {
-    if (data.retweeted_status)    { return; }
-    if (data.in_reply_to_user_id) { return; }
+const kancolleStaffID = '294025417';
 
-    notify(data);
+twitter.stream('statuses/filter', {follow: kancolleStaffID, tweet_mode: 'extended'}, (stream) => {
+  stream.on('data', (data) => {
+    if (data.retweeted_status) { return; }
+
+    switch (data.in_reply_to_user_id_str) {
+      case null:
+      case undefined:
+      case kancolleStaffID:
+        notify(data);
+      default:
+        // do nothing
+    }
+
   });
 
   stream.on('error', (error, data) => {
