@@ -57,7 +57,7 @@ stream.on('data', async (tweet) => {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      source: template(Object.assign(tweet, {photoUrls})),
+      source: template({...tweet, photoUrls}),
       format: 'html'
     })
   })
