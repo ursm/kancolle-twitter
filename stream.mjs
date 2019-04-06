@@ -48,8 +48,8 @@ stream.on('data', async (tweet) => {
 
   const photoUrls = tweet.extended_entities ? tweet.extended_entities.media.filter(({type}) => (
     type === 'photo'
-  )).map(({media_url_https}) => (
-    `${process.env.FLECKTARN_URL}/images/${sign(media_url_https)}/${querystring.escape(media_url_https)}`
+  )).map(({media_url_https: url}) => (
+    `${process.env.FLECKTARN_URL}/images/${signature(url)}/${querystring.escape(url)}`
   )) : []
 
   await fetch(process.env.HOOK_ENDPOINT, {
@@ -73,8 +73,7 @@ process.on('SIGTERM', () => {
   process.exit(0)
 })
 
-function sign(url) {
-  const hash = crypto.createHmac('sha224', process.env.FLECKTARN_HMAC_SECRET)
-  hash.update(url)
-  return base64url(hash.digest())
+function signature(url) {
+  const digest = crypto.createHmac('sha224', process.env.FLECKTARN_HMAC_SECRET).update(url).digest()
+  return base64url.encode(digest)
 }
