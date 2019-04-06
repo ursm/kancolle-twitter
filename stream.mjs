@@ -38,7 +38,7 @@ const stream = twitter.stream('statuses/filter', {
 })
 
 stream.on('data', async (tweet) => {
-  if (tweet.user.id_str !== userId) { return; }
+  if (tweet.user.id_str !== userId) { return }
 
   console.log(`https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`)
 

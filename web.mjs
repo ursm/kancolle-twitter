@@ -17,7 +17,7 @@ app.get('/photos/:digest/:url', async (req, res) => {
   }
 
   const key     = md5(req.params.url)
-  const headers = await getAndParseJSONFromCache(cache, `${key}:headers`)
+  const headers = await getJSONFromCache(cache, `${key}:headers`)
 
   if (headers) {
     for (const [k, v] of Object.entries(headers)) {
@@ -68,14 +68,14 @@ function md5(url) {
   return hash.digest('hex')
 }
 
-async function getAndParseJSONFromCache(cache, key) {
+async function getJSONFromCache(cache, key) {
   const {value: buf} = await cache.get(key)
 
-  if (!buf) { return null; }
+  if (!buf) { return null }
 
   const json = buf.toString()
 
-  if (json.length === 0) { return null; }
+  if (json.length === 0) { return null }
 
   return JSON.parse(json)
 }
