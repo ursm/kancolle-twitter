@@ -2,9 +2,6 @@
   "name": "egoido",
   "version": "0.0.0",
   "description": "Ego-search tool for idobata.io",
-  "engines": {
-    "node": "11.x"
-  },
   "author": "Yoji Shidara",
   "license": "MIT",
   "dependencies": {
