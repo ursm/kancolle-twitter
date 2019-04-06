@@ -73,7 +73,7 @@ process.on('SIGTERM', () => {
 })
 
 function hmac(url) {
-  const hash = crypto.createHmac('sha256', process.env.FLECKTARN_HMAC_SECRET)
+  const hash = crypto.createHmac('sha224', process.env.FLECKTARN_HMAC_SECRET)
   hash.update(url)
   return hash.digest('hex')
 }
