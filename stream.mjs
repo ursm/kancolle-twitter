@@ -1,9 +1,8 @@
 import Handlebars from 'handlebars'
 import Twitter from 'twitter-lite'
+import crypto from 'crypto'
 import fetch from 'node-fetch'
 import querystring from 'querystring'
-
-import { hmac } from './util'
 
 const template = Handlebars.compile(`
   <img height="16" width="16" src="{{user.profile_image_url_https}}">
@@ -49,7 +48,7 @@ stream.on('data', async (tweet) => {
   const photoUrls = tweet.extended_entities ? tweet.extended_entities.media.filter(({type}) => (
     type === 'photo'
   )).map(({media_url_https}) => (
-    `${process.env.APP_URL}/photos/${hmac(media_url_https)}/${querystring.escape(media_url_https)}`
+    `${process.env.FLECKTARN_URL}/images/${hmac(media_url_https)}/${querystring.escape(media_url_https)}`
   )) : []
 
   await fetch(process.env.HOOK_ENDPOINT, {
@@ -73,6 +72,8 @@ process.on('SIGTERM', () => {
   process.exit(0)
 })
 
-setInterval(() => {
-  console.log('heartbeat')
-}, 25 * 60 * 1000)
+function hmac(url) {
+  const hash = crypto.createHmac('sha256', process.env.FLECKTARN_SECRET)
+  hash.update(url)
+  return hash.digest('hex')
+}
