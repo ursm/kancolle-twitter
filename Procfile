@@ -1,1 +1,2 @@
-worker: node --experimental-modules app.mjs
+web: node --experimental-modules web.mjs
+stream: node --experimental-modules stream.mjs
