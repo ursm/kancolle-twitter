@@ -72,3 +72,7 @@ process.on('SIGTERM', () => {
   stream.destroy()
   process.exit(0)
 })
+
+setInterval(() => {
+  console.log('heartbeat')
+}, 25 * 60 * 1000)
