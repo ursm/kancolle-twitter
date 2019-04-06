@@ -1,5 +1,6 @@
 import Handlebars from 'handlebars'
 import Twitter from 'twitter-lite'
+import base64url from 'base64url'
 import crypto from 'crypto'
 import fetch from 'node-fetch'
 import querystring from 'querystring'
@@ -48,7 +49,7 @@ stream.on('data', async (tweet) => {
   const photoUrls = tweet.extended_entities ? tweet.extended_entities.media.filter(({type}) => (
     type === 'photo'
   )).map(({media_url_https}) => (
-    `${process.env.FLECKTARN_URL}/images/${hmac(media_url_https)}/${querystring.escape(media_url_https)}`
+    `${process.env.FLECKTARN_URL}/images/${sign(media_url_https)}/${querystring.escape(media_url_https)}`
   )) : []
 
   await fetch(process.env.HOOK_ENDPOINT, {
@@ -72,8 +73,8 @@ process.on('SIGTERM', () => {
   process.exit(0)
 })
 
-function hmac(url) {
+function sign(url) {
   const hash = crypto.createHmac('sha224', process.env.FLECKTARN_HMAC_SECRET)
   hash.update(url)
-  return hash.digest('hex')
+  return base64url(hash.digest())
 }
