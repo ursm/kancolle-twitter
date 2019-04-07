@@ -32,7 +32,9 @@ export default function({idobata, twitter, flecktarn}) {
   stream.on('data', async (tweet) => {
     if (tweet.user.id_str !== twitter.follow) { return }
 
-    console.log(`https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`)
+    if (process.env.NODE_ENV !== 'test') {
+      console.log(`https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`)
+    }
 
     if (tweet.extended_tweet) {
       tweet.text = tweet.extended_tweet.full_text.slice(...tweet.extended_tweet.display_text_range)

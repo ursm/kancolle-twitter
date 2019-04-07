@@ -1,4 +1,3 @@
-import dedent from 'dedent'
 import fetch from 'node-fetch'
 
 import createStream from '../stream'
@@ -52,20 +51,21 @@ describe('stream', () => {
         text: 'hello from the wonderland'
       })
 
-      expect(fetch).toHaveBeenCalledWith('https://example.com/idobata-hook', {
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          source: dedent`
-            <img height="16" width="16" src="https://example.com/profile.png">
-            <b>Alice Liddell</b> (<a href="https://twitter.com/alice">@alice</a>)<br>
-            <p>hello from the wonderland (<a href="https://twitter.com/alice/status/TWEET_ID">link</a>)</p>
-          `,
-          format: 'html'
-        })
-      })
+      expect(fetch).toHaveBeenCalledTimes(1)
+
+      const [url, {method, headers, body}] = fetch.mock.calls[0]
+      const {source, format} = JSON.parse(body)
+
+      expect(url).toBe('https://example.com/idobata-hook')
+      expect(method).toBe('post')
+      expect(headers).toEqual({'Content-Type': 'application/json'})
+      expect(format).toBe('html')
+
+      expect(source).toEqualWithUnindent(`
+        <img height="16" width="16" src="https://example.com/profile.png">
+        <b>Alice Liddell</b> (<a href="https://twitter.com/alice">@alice</a>)<br>
+        <p>hello from the wonderland (<a href="https://twitter.com/alice/status/TWEET_ID">link</a>)</p>
+      `)
     })
 
     test('extended', () => {
@@ -98,28 +98,24 @@ describe('stream', () => {
         }
       })
 
-      expect(fetch).toHaveBeenCalledWith('https://example.com/idobata-hook', {
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          source: dedent`
-            <img height="16" width="16" src="https://example.com/profile.png">
-            <b>Alice Liddell</b> (<a href="https://twitter.com/alice">@alice</a>)<br>
-            <p>Drink Me (<a href="https://twitter.com/alice/status/TWEET_ID">link</a>)</p>
+      expect(fetch).toHaveBeenCalledTimes(1)
 
-              <ul class="list-inline">
-                  <li>
-                    <a href="${flecktarnUrl}">
-                      <img src="${flecktarnUrl}" alt="">
-                    </a>
-                  </li>
-              </ul>
-          `,
-          format: 'html'
-        })
-      })
+      const [, {body}] = fetch.mock.calls[0]
+      const {source} = JSON.parse(body)
+
+      expect(source).toEqualWithUnindent(`
+        <img height="16" width="16" src="https://example.com/profile.png">
+        <b>Alice Liddell</b> (<a href="https://twitter.com/alice">@alice</a>)<br>
+        <p>Drink Me (<a href="https://twitter.com/alice/status/TWEET_ID">link</a>)</p>
+
+        <ul class="list-inline">
+          <li>
+            <a href="${flecktarnUrl}">
+              <img src="${flecktarnUrl}" alt="">
+            </a>
+          </li>
+        </ul>
+      `)
     })
   })
 })
