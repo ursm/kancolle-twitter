@@ -8,7 +8,16 @@ import { createFlecktarnUrl } from './util'
 const template = Handlebars.compile(dedent`
   <img height="16" width="16" src="{{user.profile_image_url_https}}">
   <b>{{user.name}}</b> (<a href="https://twitter.com/{{user.screen_name}}">@{{user.screen_name}}</a>)<br>
-  <p>{{#if extended_tweet}}{{extended_tweet.full_text}}{{else}}{{text}}{{/if}} (<a href="https://twitter.com/{{user.screen_name}}/status/{{id_str}}">link</a>)</p>
+
+  <p>
+    {{#if extended_tweet}}
+      {{extended_tweet.full_text}}
+    {{else}}
+      {{text}}
+    {{/if}}
+
+    (<a href="https://twitter.com/{{user.screen_name}}/status/{{id_str}}">link</a>)
+  </p>
 
   {{#if extended_entities.media}}
     <ul class="list-inline">

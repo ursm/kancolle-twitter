@@ -63,7 +63,11 @@ describe('on tweet', () => {
     expect(source).toEqualWithUnindent(`
       <img height="16" width="16" src="http://example.com/profile.png">
       <b>Alice Liddell</b> (<a href="https://twitter.com/alice">@alice</a>)<br>
-      <p>hello from the wonderland (<a href="https://twitter.com/alice/status/TWEET_ID">link</a>)</p>
+
+      <p>
+        hello from the wonderland
+        (<a href="https://twitter.com/alice/status/TWEET_ID">link</a>)
+      </p>
     `)
   })
 
@@ -105,7 +109,11 @@ describe('on tweet', () => {
     expect(source).toEqualWithUnindent(`
       <img height="16" width="16" src="http://example.com/profile.png">
       <b>Alice Liddell</b> (<a href="https://twitter.com/alice">@alice</a>)<br>
-      <p>Alice taking &quot;Drink Me&quot; bottle (<a href="https://twitter.com/alice/status/TWEET_ID">link</a>)</p>
+
+      <p>
+        Alice taking &quot;Drink Me&quot; bottle
+        (<a href="https://twitter.com/alice/status/TWEET_ID">link</a>)
+      </p>
 
       <ul class="list-inline">
         <li>
