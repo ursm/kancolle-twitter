@@ -1,1 +1,1 @@
-stream: node --experimental-modules stream.mjs
+stream: node --experimental-modules index.mjs
