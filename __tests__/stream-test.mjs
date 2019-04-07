@@ -8,13 +8,13 @@ jest.mock('twitter-lite')
 
 const config = {
   idobata: {
-    hookEndpoint: 'https://example.com/idobata-hook'
+    hookEndpoint: 'http://example.com/idobata-hook'
   },
   twitter: {
     follow: 'FOLLOW_USER_ID'
   },
   flecktarn: {
-    url:        'https://example.com/flecktarn',
+    url:        'http://example.com/flecktarn',
     hmacSecret: 'SECRET'
   }
 }
@@ -42,7 +42,7 @@ describe('on tweet', () => {
     stream.emit('data', {
       user: {
         id_str: 'FOLLOW_USER_ID',
-        profile_image_url_https: 'https://example.com/profile.png',
+        profile_image_url_https: 'http://example.com/profile.png',
         name: 'Alice Liddell',
         screen_name: 'alice',
       },
@@ -55,26 +55,23 @@ describe('on tweet', () => {
     const [url, {method, headers, body}] = fetch.mock.calls[0]
     const {source, format} = JSON.parse(body)
 
-    expect(url).toBe('https://example.com/idobata-hook')
+    expect(url).toBe('http://example.com/idobata-hook')
     expect(method).toBe('post')
     expect(headers).toEqual({'Content-Type': 'application/json'})
     expect(format).toBe('html')
 
     expect(source).toEqualWithUnindent(`
-      <img height="16" width="16" src="https://example.com/profile.png">
+      <img height="16" width="16" src="http://example.com/profile.png">
       <b>Alice Liddell</b> (<a href="https://twitter.com/alice">@alice</a>)<br>
       <p>hello from the wonderland (<a href="https://twitter.com/alice/status/TWEET_ID">link</a>)</p>
     `)
   })
 
   test('extended', () => {
-    const photoUrl     = 'https://example.com/tweet-photo.png'
-    const flecktarnUrl = createFlecktarnUrl(photoUrl, config.flecktarn)
-
     stream.emit('data', {
       user: {
         id_str: 'FOLLOW_USER_ID',
-        profile_image_url_https: 'https://example.com/profile.png',
+        profile_image_url_https: 'http://example.com/profile.png',
         name: 'Alice Liddell',
         screen_name: 'alice',
       },
@@ -88,10 +85,13 @@ describe('on tweet', () => {
         media: [
           {
             type: 'photo',
-            media_url_https: photoUrl
+            media_url_https: 'http://example.com/photo/1.jpg',
+            expanded_url: 'http://example.com/photo/1'
           },
           {
-            type: 'other'
+            type: 'video',
+            media_url_https: 'http://example.com/video-thumbnail/1.jpg',
+            expanded_url: 'http://example.com/video/1'
           }
         ]
       }
@@ -103,14 +103,19 @@ describe('on tweet', () => {
     const {source} = JSON.parse(body)
 
     expect(source).toEqualWithUnindent(`
-      <img height="16" width="16" src="https://example.com/profile.png">
+      <img height="16" width="16" src="http://example.com/profile.png">
       <b>Alice Liddell</b> (<a href="https://twitter.com/alice">@alice</a>)<br>
       <p>Drink Me (<a href="https://twitter.com/alice/status/TWEET_ID">link</a>)</p>
 
       <ul class="list-inline">
         <li>
-          <a href="${flecktarnUrl}">
-            <img src="${flecktarnUrl}" alt="">
+          <a href="http://example.com/photo/1">
+            <img src="${createFlecktarnUrl('http://example.com/photo/1.jpg', config.flecktarn)}" alt="">
+          </a>
+        </li>
+        <li>
+          <a href="http://example.com/video/1">
+            <img src="${createFlecktarnUrl('http://example.com/video-thumbnail/1.jpg', config.flecktarn)}" alt="">
           </a>
         </li>
       </ul>

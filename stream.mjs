@@ -10,12 +10,12 @@ const template = Handlebars.compile(dedent`
   <b>{{user.name}}</b> (<a href="https://twitter.com/{{user.screen_name}}">@{{user.screen_name}}</a>)<br>
   <p>{{{text}}} (<a href="https://twitter.com/{{user.screen_name}}/status/{{id_str}}">link</a>)</p>
 
-  {{#if photoUrls}}
+  {{#if extended_entities.media}}
     <ul class="list-inline">
-      {{#each photoUrls as |url|}}
+      {{#each extended_entities.media as |media|}}
         <li>
-          <a href="{{url}}">
-            <img src="{{url}}" alt="">
+          <a href="{{media.expanded_url}}">
+            <img src="{{flecktarn-url media.media_url_https}}" alt="">
           </a>
         </li>
       {{/each}}
@@ -24,6 +24,8 @@ const template = Handlebars.compile(dedent`
 `)
 
 export default function({idobata, twitter, flecktarn}) {
+  Handlebars.registerHelper('flecktarn-url', (url) => createFlecktarnUrl(url, flecktarn))
+
   const stream = new Twitter(twitter.keys).stream('statuses/filter', {
     follow:     twitter.follow,
     tweet_mode: 'extended'
@@ -40,17 +42,13 @@ export default function({idobata, twitter, flecktarn}) {
       tweet.text = tweet.extended_tweet.full_text.slice(...tweet.extended_tweet.display_text_range)
     }
 
-    const photoUrls = tweet.extended_entities ? tweet.extended_entities.media.filter(({type}) => (
-      type === 'photo'
-    )).map(({media_url_https}) => createFlecktarnUrl(media_url_https, flecktarn)) : []
-
     await fetch(idobata.hookEndpoint, {
       method: 'post',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        source: template({...tweet, photoUrls}).trimEnd(),
+        source: template(tweet).trimEnd(),
         format: 'html'
       })
     })
