@@ -8,7 +8,7 @@ import { createFlecktarnUrl } from './util'
 const template = Handlebars.compile(dedent`
   <img height="16" width="16" src="{{user.profile_image_url_https}}">
   <b>{{user.name}}</b> (<a href="https://twitter.com/{{user.screen_name}}">@{{user.screen_name}}</a>)<br>
-  <p>{{{text}}} (<a href="https://twitter.com/{{user.screen_name}}/status/{{id_str}}">link</a>)</p>
+  <p>{{#if extended_tweet}}{{extended_tweet.full_text}}{{else}}{{text}}{{/if}} (<a href="https://twitter.com/{{user.screen_name}}/status/{{id_str}}">link</a>)</p>
 
   {{#if extended_entities.media}}
     <ul class="list-inline">
@@ -36,10 +36,6 @@ export default function({idobata, twitter, flecktarn}) {
 
     if (process.env.NODE_ENV !== 'test') {
       console.log(`https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`)
-    }
-
-    if (tweet.extended_tweet) {
-      tweet.text = tweet.extended_tweet.full_text.slice(...tweet.extended_tweet.display_text_range)
     }
 
     await fetch(idobata.hookEndpoint, {
