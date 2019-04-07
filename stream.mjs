@@ -1,11 +1,11 @@
 import Handlebars from 'handlebars'
 import Twitter from 'twitter-lite'
-import base64url from 'base64url'
-import crypto from 'crypto'
+import dedent from 'dedent'
 import fetch from 'node-fetch'
-import querystring from 'querystring'
 
-const template = Handlebars.compile(`
+import { createFlecktarnUrl } from './util'
+
+const template = Handlebars.compile(dedent`
   <img height="16" width="16" src="{{user.profile_image_url_https}}">
   <b>{{user.name}}</b> (<a href="https://twitter.com/{{user.screen_name}}">@{{user.screen_name}}</a>)<br>
   <p>{{{text}}} (<a href="https://twitter.com/{{user.screen_name}}/status/{{id_str}}">link</a>)</p>
@@ -23,57 +23,40 @@ const template = Handlebars.compile(`
   {{/if}}
 `)
 
-const twitter = new Twitter({
-  consumer_key:        process.env.TWITTER_CONSUMER_KEY,
-  consumer_secret:     process.env.TWITTER_CONSUMER_SECRET,
-  access_token_key:    process.env.TWITTER_ACCESS_TOKEN_KEY,
-  access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
-})
+export default function({idobata, twitter, flecktarn}) {
+  const stream = new Twitter(twitter.keys).stream('statuses/filter', {
+    follow:     twitter.follow,
+    tweet_mode: 'extended'
+  })
 
-const userId = process.env.TWITTER_USER_ID
+  stream.on('data', async (tweet) => {
+    if (tweet.user.id_str !== twitter.follow) { return }
 
-const stream = twitter.stream('statuses/filter', {
-  follow:     userId,
-  tweet_mode: 'extended'
-})
+    console.log(`https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`)
 
-stream.on('data', async (tweet) => {
-  if (tweet.user.id_str !== userId) { return }
+    if (tweet.extended_tweet) {
+      tweet.text = tweet.extended_tweet.full_text.slice(...tweet.extended_tweet.display_text_range)
+    }
 
-  console.log(`https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`)
+    const photoUrls = tweet.extended_entities ? tweet.extended_entities.media.filter(({type}) => (
+      type === 'photo'
+    )).map(({media_url_https}) => createFlecktarnUrl(media_url_https, flecktarn)) : []
 
-  if (tweet.extended_tweet) {
-    tweet.text = tweet.extended_tweet.full_text.slice(...tweet.extended_tweet.display_text_range)
-  }
-
-  const photoUrls = tweet.extended_entities ? tweet.extended_entities.media.filter(({type}) => (
-    type === 'photo'
-  )).map(({media_url_https: url}) => (
-    `${process.env.FLECKTARN_URL}/images/${signature(url)}/${querystring.escape(url)}`
-  )) : []
-
-  await fetch(process.env.HOOK_ENDPOINT, {
-    method: 'post',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      source: template({...tweet, photoUrls}),
-      format: 'html'
+    await fetch(idobata.hookEndpoint, {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        source: template({...tweet, photoUrls}).trimEnd(),
+        format: 'html'
+      })
     })
   })
-})
 
-stream.on('error', (e) => {
-  console.error(e)
-})
+  stream.on('error', (e) => {
+    console.error(e)
+  })
 
-process.on('SIGTERM', () => {
-  stream.destroy()
-  process.exit(0)
-})
-
-function signature(url) {
-  const digest = crypto.createHmac('sha224', process.env.FLECKTARN_HMAC_SECRET).update(url).digest()
-  return base64url.encode(digest)
+  return stream
 }
