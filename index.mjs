@@ -2,7 +2,7 @@ import createStream from './stream'
 
 const stream = createStream({
   idobata: {
-    hookEndpoint: process.env.HOOK_ENDPOINT
+    hookUrl: process.env.IDOBATA_HOOK_URL
   },
   twitter: {
     keys: {
@@ -11,10 +11,10 @@ const stream = createStream({
       access_token_key:    process.env.TWITTER_ACCESS_TOKEN_KEY,
       access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
     },
-    followIds: process.env.TWITTER_USER_ID.split(',')
+    followIds: process.env.TWITTER_FOLLOW_IDS.split(',')
   },
   flecktarn: {
-    url:        process.env.FLECKTARN_URL,
+    rootUrl:    process.env.FLECKTARN_ROOT_URL,
     hmacSecret: process.env.FLECKTARN_HMAC_SECRET
   }
 })

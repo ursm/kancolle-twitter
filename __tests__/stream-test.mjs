@@ -19,13 +19,13 @@ jest.mock('node-fetch')
 
 const config = {
   idobata: {
-    hookEndpoint: 'http://example.com/idobata-hook'
+    hookUrl: 'http://example.com/idobata-hook'
   },
   twitter: {
     followIds: ['FOLLOW_1', 'FOLLOW_2']
   },
   flecktarn: {
-    url:        'http://example.com/flecktarn',
+    rootUrl:    'http://example.com/flecktarn',
     hmacSecret: 'SECRET'
   }
 }

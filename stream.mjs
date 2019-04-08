@@ -43,7 +43,7 @@ export default function(config) {
       console.log(`https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`)
     }
 
-    await fetch(config.idobata.hookEndpoint, {
+    await fetch(config.idobata.hookUrl, {
       method: 'post',
       headers: {
         'Content-Type': 'application/json'
