@@ -1,13 +1,12 @@
 import Handlebars from 'handlebars'
 import Twitter from 'twitter-lite'
-import dedent from 'dedent'
 import fetch from 'node-fetch'
 
 import { createFlecktarnUrl } from './util'
 
 Handlebars.registerHelper('slice', (str, [i, j]) => str.slice(i, j))
 
-const template = Handlebars.compile(dedent`
+const template = Handlebars.compile(`
   <img height="16" width="16" src="{{user.profile_image_url_https}}">
   <b>{{user.name}}</b> (<a href="https://twitter.com/{{user.screen_name}}">@{{user.screen_name}}</a>)<br>
 
