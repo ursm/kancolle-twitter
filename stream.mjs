@@ -42,22 +42,26 @@ export default function(config) {
   })
 
   stream.on('data', async (tweet) => {
-    if (!config.twitter.followIds.includes(tweet.user.id_str)) { return }
+    try {
+      if (!config.twitter.followIds.includes(tweet.user.id_str)) { return }
 
-    if (process.env.NODE_ENV !== 'test') {
-      console.log(`https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`)
-    }
+      if (process.env.NODE_ENV !== 'test') {
+        console.log(`https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`)
+      }
 
-    await fetch(config.idobata.hookUrl, {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        source: template(tweet).trimEnd(),
-        format: 'html'
+      await fetch(config.idobata.hookUrl, {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          source: template(tweet).trimEnd(),
+          format: 'html'
+        })
       })
-    })
+    } catch (e) {
+      console.error(e, tweet);
+    }
   })
 
   stream.on('error', (e) => {
