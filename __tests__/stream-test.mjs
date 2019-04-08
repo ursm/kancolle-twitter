@@ -77,15 +77,7 @@ describe('on tweet', () => {
     expect(headers).toEqual({'Content-Type': 'application/json'})
     expect(format).toBe('html')
 
-    expect(source).toEqualWithUnindent(`
-      <img height="16" width="16" src="http://example.com/profile.png">
-      <b>Alice Liddell</b> (<a href="https://twitter.com/alice">@alice</a>)<br>
-
-      <p>
-        hello from the wonderland
-        (<a href="https://twitter.com/alice/status/TWEET_ID">link</a>)
-      </p>
-    `)
+    expect(source).toMatchSnapshot()
   })
 
   test('extended', () => {
@@ -123,28 +115,7 @@ describe('on tweet', () => {
     const [, {body}] = fetch.mock.calls[0]
     const {source} = JSON.parse(body)
 
-    expect(source).toEqualWithUnindent(`
-      <img height="16" width="16" src="http://example.com/profile.png">
-      <b>Alice Liddell</b> (<a href="https://twitter.com/alice">@alice</a>)<br>
-
-      <p>
-        "Drink Me"
-        (<a href="https://twitter.com/alice/status/TWEET_ID">link</a>)
-      </p>
-
-      <ul class="list-inline">
-        <li>
-          <a href="http://example.com/photo/1">
-            <img src="${createFlecktarnUrl('http://example.com/photo/1.jpg', config.flecktarn)}" alt="">
-          </a>
-        </li>
-        <li>
-          <a href="http://example.com/video/1">
-            <img src="${createFlecktarnUrl('http://example.com/video-thumbnail/1.jpg', config.flecktarn)}" alt="">
-          </a>
-        </li>
-      </ul>
-    `)
+    expect(source).toMatchSnapshot()
   })
 })
 
