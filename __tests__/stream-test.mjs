@@ -1,17 +1,28 @@
+import EventEmitter from 'events'
+import Twitter from 'twitter-lite'
 import fetch from 'node-fetch'
 
 import createStream from '../stream'
 import { createFlecktarnUrl } from '../util'
 
+const mockStream = jest.fn().mockImplementation(() => new EventEmitter())
+
+jest.mock('twitter-lite', () => {
+  return jest.fn().mockImplementation(() => {
+    return {
+      stream: mockStream
+    }
+  })
+})
+
 jest.mock('node-fetch')
-jest.mock('twitter-lite')
 
 const config = {
   idobata: {
     hookEndpoint: 'http://example.com/idobata-hook'
   },
   twitter: {
-    follow: 'FOLLOW_USER_ID'
+    followIds: ['FOLLOW_1', 'FOLLOW_2']
   },
   flecktarn: {
     url:        'http://example.com/flecktarn',
@@ -22,9 +33,15 @@ const config = {
 let stream
 
 beforeEach(() => {
-  fetch.mockReset()
+  Twitter.mockClear()
+  fetch.mockClear()
+  mockStream.mockClear()
 
   stream = createStream(config)
+})
+
+test('connect', () => {
+  expect(mockStream).toHaveBeenCalledWith('statuses/filter', {follow: 'FOLLOW_1,FOLLOW_2'})
 })
 
 describe('on tweet', () => {
@@ -41,7 +58,7 @@ describe('on tweet', () => {
   test('simple', () => {
     stream.emit('data', {
       user: {
-        id_str: 'FOLLOW_USER_ID',
+        id_str: 'FOLLOW_1',
         profile_image_url_https: 'http://example.com/profile.png',
         name: 'Alice Liddell',
         screen_name: 'alice',
@@ -74,7 +91,7 @@ describe('on tweet', () => {
   test('extended', () => {
     stream.emit('data', {
       user: {
-        id_str: 'FOLLOW_USER_ID',
+        id_str: 'FOLLOW_2',
         profile_image_url_https: 'http://example.com/profile.png',
         name: 'Alice Liddell',
         screen_name: 'alice',

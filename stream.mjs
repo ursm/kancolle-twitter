@@ -29,22 +29,21 @@ const template = Handlebars.compile(dedent`
   {{/if}}
 `)
 
-export default function({idobata, twitter, flecktarn}) {
-  Handlebars.registerHelper('flecktarn-url', (url) => createFlecktarnUrl(url, flecktarn))
+export default function(config) {
+  Handlebars.registerHelper('flecktarn-url', (url) => createFlecktarnUrl(url, config.flecktarn))
 
-  const stream = new Twitter(twitter.keys).stream('statuses/filter', {
-    follow:     twitter.follow,
-    tweet_mode: 'extended'
+  const stream = new Twitter(config.twitter.keys).stream('statuses/filter', {
+    follow: config.twitter.followIds.join(',')
   })
 
   stream.on('data', async (tweet) => {
-    if (tweet.user.id_str !== twitter.follow) { return }
+    if (!config.twitter.followIds.includes(tweet.user.id_str)) { return }
 
     if (process.env.NODE_ENV !== 'test') {
       console.log(`https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`)
     }
 
-    await fetch(idobata.hookEndpoint, {
+    await fetch(config.idobata.hookEndpoint, {
       method: 'post',
       headers: {
         'Content-Type': 'application/json'

@@ -11,7 +11,7 @@ const stream = createStream({
       access_token_key:    process.env.TWITTER_ACCESS_TOKEN_KEY,
       access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
     },
-    follow: process.env.TWITTER_USER_ID
+    followIds: process.env.TWITTER_USER_ID.split(',')
   },
   flecktarn: {
     url:        process.env.FLECKTARN_URL,
