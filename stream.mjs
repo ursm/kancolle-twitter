@@ -5,14 +5,19 @@ import fetch from 'node-fetch'
 
 import { createFlecktarnUrl } from './util'
 
-Handlebars.registerHelper('or', (x, y) => x || y)
+Handlebars.registerHelper('slice', (str, [i, j]) => str.slice(i, j))
 
 const template = Handlebars.compile(dedent`
   <img height="16" width="16" src="{{user.profile_image_url_https}}">
   <b>{{user.name}}</b> (<a href="https://twitter.com/{{user.screen_name}}">@{{user.screen_name}}</a>)<br>
 
   <p>
-    {{{or extended_tweet.full_text text}}}
+    {{#if extended_tweet}}
+      {{{slice extended_tweet.full_text extended_tweet.display_text_range}}}
+    {{else}}
+      {{{text}}}
+    {{/if}}
+
     (<a href="https://twitter.com/{{user.screen_name}}/status/{{id_str}}">link</a>)
   </p>
 

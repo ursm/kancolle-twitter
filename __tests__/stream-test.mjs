@@ -100,7 +100,7 @@ describe('on tweet', () => {
       text: 'hello from the wonderland',
       extended_tweet: {
         full_text: 'Alice taking "Drink Me" bottle',
-        display_text_range: [14, 22],
+        display_text_range: [13, 23],
       },
       extended_entities: {
         media: [
@@ -128,7 +128,7 @@ describe('on tweet', () => {
       <b>Alice Liddell</b> (<a href="https://twitter.com/alice">@alice</a>)<br>
 
       <p>
-        Alice taking "Drink Me" bottle
+        "Drink Me"
         (<a href="https://twitter.com/alice/status/TWEET_ID">link</a>)
       </p>
 
