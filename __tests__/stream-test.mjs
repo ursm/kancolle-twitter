@@ -128,7 +128,7 @@ describe('on tweet', () => {
       <b>Alice Liddell</b> (<a href="https://twitter.com/alice">@alice</a>)<br>
 
       <p>
-        Alice taking &quot;Drink Me&quot; bottle
+        Alice taking "Drink Me" bottle
         (<a href="https://twitter.com/alice/status/TWEET_ID">link</a>)
       </p>
 

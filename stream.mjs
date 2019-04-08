@@ -12,7 +12,7 @@ const template = Handlebars.compile(dedent`
   <b>{{user.name}}</b> (<a href="https://twitter.com/{{user.screen_name}}">@{{user.screen_name}}</a>)<br>
 
   <p>
-    {{or extended_tweet.full_text text}}
+    {{{or extended_tweet.full_text text}}}
     (<a href="https://twitter.com/{{user.screen_name}}/status/{{id_str}}">link</a>)
   </p>
 
