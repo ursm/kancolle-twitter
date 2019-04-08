@@ -34,6 +34,12 @@ const template = Handlebars.compile(dedent`
   {{/if}}
 `)
 
+function log(...args) {
+  if (process.env.NODE_ENV === 'test') { return }
+
+  console.log(...args)
+}
+
 export default function(config) {
   Handlebars.registerHelper('flecktarn-url', (url) => createFlecktarnUrl(url, config.flecktarn))
 
@@ -41,13 +47,12 @@ export default function(config) {
     follow: config.twitter.followIds.join(',')
   })
 
-  stream.on('data', async (tweet) => {
+  stream.on('data', async (payload) => {
     try {
-      if (!config.twitter.followIds.includes(tweet.user.id_str)) { return }
+      if (!payload.user) { return }
+      if (!config.twitter.followIds.includes(payload.user.id_str)) { return }
 
-      if (process.env.NODE_ENV !== 'test') {
-        console.log(`https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`)
-      }
+      log(`https://twitter.com/${payload.user.screen_name}/status/${payload.id_str}`)
 
       await fetch(config.idobata.hookUrl, {
         method: 'post',
@@ -55,12 +60,12 @@ export default function(config) {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          source: template(tweet).trimEnd(),
+          source: template(payload).trimEnd(),
           format: 'html'
         })
       })
     } catch (e) {
-      console.error(e, tweet);
+      console.error(e, payload);
     }
   })
 

@@ -147,3 +147,14 @@ describe('on tweet', () => {
     `)
   })
 })
+
+describe('on delete', () => {
+  test('ignore', () => {
+    stream.emit('data', {
+      delete: {
+      }
+    })
+
+    expect(fetch).not.toHaveBeenCalled()
+  })
+})
