@@ -5,6 +5,7 @@ import fetch from 'node-fetch'
 import { createFlecktarnUrl } from './util'
 
 Handlebars.registerHelper('slice', (str, [i, j]) => str.slice(i, j))
+Handlebars.registerHelper('or', (x, y) => x || y)
 
 const template = Handlebars.compile(`
   <img height="16" width="16" src="{{user.profile_image_url_https}}">
@@ -20,9 +21,9 @@ const template = Handlebars.compile(`
     (<a href="https://twitter.com/{{user.screen_name}}/status/{{id_str}}">link</a>)
   </p>
 
-  {{#if extended_entities.media}}
+  {{#if (or extended_entities.media entities.media)}}
     <ul class="list-inline">
-      {{#each extended_entities.media as |media|}}
+      {{#each (or extended_entities.media entities.media) as |media|}}
         <li>
           <a href="{{media.expanded_url}}">
             <img src="{{flecktarn-url media.media_url_https}}" alt="">

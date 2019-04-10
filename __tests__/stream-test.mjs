@@ -117,6 +117,35 @@ describe('on tweet', () => {
 
     expect(source).toMatchSnapshot()
   })
+
+  test('only entities', () => {
+    stream.emit('data', {
+      user: {
+        id_str: 'FOLLOW_2',
+        profile_image_url_https: 'http://example.com/profile.png',
+        name: 'Alice Liddell',
+        screen_name: 'alice',
+      },
+      id_str: 'TWEET_ID',
+      text: 'hello from the wonderland',
+      entities: {
+        media: [
+          {
+            type: 'photo',
+            media_url_https: 'http://example.com/photo/1.jpg',
+            expanded_url: 'http://example.com/photo/1'
+          }
+        ]
+      }
+    })
+
+    expect(fetch).toHaveBeenCalledTimes(1)
+
+    const [, {body}] = fetch.mock.calls[0]
+    const {source} = JSON.parse(body)
+
+    expect(source).toMatchSnapshot()
+  })
 })
 
 describe('on delete', () => {
