@@ -2,13 +2,13 @@
 
 exports[`on tweet extended 1`] = `
 "
-  <p>
+  <div>
     <img height=\\"16\\" width=\\"16\\" src=\\"http://example.com/profile.png\\">
     <b>Alice Liddell</b>
     <a href=\\"https://twitter.com/alice\\" class=\\"text-muted\\">@alice</a>
     <span class=\\"text-muted\\">·</span>
     <a href=\\"https://twitter.com/alice/status/TWEET_ID\\" class=\\"text-muted\\">permalink</a>
-  </p>
+  </div>
 
       <p>\\"Drink Me\\"</p>
 
@@ -28,13 +28,13 @@ exports[`on tweet extended 1`] = `
 
 exports[`on tweet only entities 1`] = `
 "
-  <p>
+  <div>
     <img height=\\"16\\" width=\\"16\\" src=\\"http://example.com/profile.png\\">
     <b>Alice Liddell</b>
     <a href=\\"https://twitter.com/alice\\" class=\\"text-muted\\">@alice</a>
     <span class=\\"text-muted\\">·</span>
     <a href=\\"https://twitter.com/alice/status/TWEET_ID\\" class=\\"text-muted\\">permalink</a>
-  </p>
+  </div>
 
       <p>hello from the wonderland</p>
 
@@ -49,13 +49,13 @@ exports[`on tweet only entities 1`] = `
 
 exports[`on tweet simple 1`] = `
 "
-  <p>
+  <div>
     <img height=\\"16\\" width=\\"16\\" src=\\"http://example.com/profile.png\\">
     <b>Alice Liddell</b>
     <a href=\\"https://twitter.com/alice\\" class=\\"text-muted\\">@alice</a>
     <span class=\\"text-muted\\">·</span>
     <a href=\\"https://twitter.com/alice/status/TWEET_ID\\" class=\\"text-muted\\">permalink</a>
-  </p>
+  </div>
 
       <p>hello from the wonderland</p>"
 `;
