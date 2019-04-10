@@ -26,7 +26,7 @@ const template = Handlebars.compile(`
     {{/with}}
   {{/if}}
 
-  {{#with (or extended_entities.media entities.media) as |objs|}}
+  {{#with (or extended_tweet.extended_entities.media extended_entities.media) as |objs|}}
     <ul class="list-inline">
       {{#each objs as |obj|}}
         <li>

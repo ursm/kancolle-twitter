@@ -64,7 +64,21 @@ describe('on tweet', () => {
         screen_name: 'alice',
       },
       id_str: 'TWEET_ID',
-      text: 'hello from the wonderland'
+      text: 'hello from the wonderland',
+      extended_entities: {
+        media: [
+          {
+            type: 'photo',
+            media_url_https: 'http://example.com/photo/1.jpg',
+            expanded_url: 'http://example.com/photo/1'
+          },
+          {
+            type: 'video',
+            media_url_https: 'http://example.com/video-thumbnail/1.jpg',
+            expanded_url: 'http://example.com/video/1'
+          }
+        ]
+      }
     })
 
     expect(fetch).toHaveBeenCalledTimes(1)
@@ -93,49 +107,20 @@ describe('on tweet', () => {
       extended_tweet: {
         full_text: 'Alice taking "Drink Me" bottle',
         display_text_range: [13, 23],
-      },
-      extended_entities: {
-        media: [
-          {
-            type: 'photo',
-            media_url_https: 'http://example.com/photo/1.jpg',
-            expanded_url: 'http://example.com/photo/1'
-          },
-          {
-            type: 'video',
-            media_url_https: 'http://example.com/video-thumbnail/1.jpg',
-            expanded_url: 'http://example.com/video/1'
-          }
-        ]
-      }
-    })
-
-    expect(fetch).toHaveBeenCalledTimes(1)
-
-    const [, {body}] = fetch.mock.calls[0]
-    const {source} = JSON.parse(body)
-
-    expect(source).toMatchSnapshot()
-  })
-
-  test('only entities', () => {
-    stream.emit('data', {
-      user: {
-        id_str: 'FOLLOW_2',
-        profile_image_url_https: 'http://example.com/profile.png',
-        name: 'Alice Liddell',
-        screen_name: 'alice',
-      },
-      id_str: 'TWEET_ID',
-      text: 'hello from the wonderland',
-      entities: {
-        media: [
-          {
-            type: 'photo',
-            media_url_https: 'http://example.com/photo/1.jpg',
-            expanded_url: 'http://example.com/photo/1'
-          }
-        ]
+        extended_entities: {
+          media: [
+            {
+              type: 'photo',
+              media_url_https: 'http://example.com/photo/1.jpg',
+              expanded_url: 'http://example.com/photo/1'
+            },
+            {
+              type: 'video',
+              media_url_https: 'http://example.com/video-thumbnail/1.jpg',
+              expanded_url: 'http://example.com/video/1'
+            }
+          ]
+        }
       }
     })
 
