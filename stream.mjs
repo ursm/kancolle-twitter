@@ -4,22 +4,27 @@ import fetch from 'node-fetch'
 
 import { createFlecktarnUrl } from './util'
 
-Handlebars.registerHelper('slice', (str, [i, j]) => str.slice(i, j))
+Handlebars.registerHelper('slice', (str, pos) => pos ? str.slice(pos[0], pos[1]) : str)
 Handlebars.registerHelper('or', (x, y) => x || y)
 
 const template = Handlebars.compile(`
-  <img height="16" width="16" src="{{user.profile_image_url_https}}">
-  <b>{{user.name}}</b> (<a href="https://twitter.com/{{user.screen_name}}">@{{user.screen_name}}</a>)<br>
-
   <p>
-    {{#if extended_tweet}}
-      {{{slice extended_tweet.full_text extended_tweet.display_text_range}}}
-    {{else}}
-      {{{text}}}
-    {{/if}}
-
-    (<a href="https://twitter.com/{{user.screen_name}}/status/{{id_str}}">link</a>)
+    <img height="16" width="16" src="{{user.profile_image_url_https}}">
+    <b>{{user.name}}</b>
+    <a href="https://twitter.com/{{user.screen_name}}" class="text-muted">@{{user.screen_name}}</a>
+    <span class="text-muted">·</span>
+    <a href="https://twitter.com/{{user.screen_name}}/status/{{id_str}}" class="text-muted">permalink</a>
   </p>
+
+  {{#if extended_tweet}}
+    {{#with (slice extended_tweet.full_text extended_tweet.display_text_range) as |text|}}
+      <p>{{{text}}}</p>
+    {{/with}}
+  {{else}}
+    {{#with (slice text display_text_range) as |text|}}
+      <p>{{{text}}}</p>
+    {{/with}}
+  {{/if}}
 
   {{#with (or extended_entities.media entities.media) as |objs|}}
     <ul class="list-inline">

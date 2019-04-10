@@ -2,14 +2,15 @@
 
 exports[`on tweet extended 1`] = `
 "
-  <img height=\\"16\\" width=\\"16\\" src=\\"http://example.com/profile.png\\">
-  <b>Alice Liddell</b> (<a href=\\"https://twitter.com/alice\\">@alice</a>)<br>
-
   <p>
-      \\"Drink Me\\"
-
-    (<a href=\\"https://twitter.com/alice/status/TWEET_ID\\">link</a>)
+    <img height=\\"16\\" width=\\"16\\" src=\\"http://example.com/profile.png\\">
+    <b>Alice Liddell</b>
+    <a href=\\"https://twitter.com/alice\\" class=\\"text-muted\\">@alice</a>
+    <span class=\\"text-muted\\">·</span>
+    <a href=\\"https://twitter.com/alice/status/TWEET_ID\\" class=\\"text-muted\\">permalink</a>
   </p>
+
+      <p>\\"Drink Me\\"</p>
 
     <ul class=\\"list-inline\\">
         <li>
@@ -27,14 +28,15 @@ exports[`on tweet extended 1`] = `
 
 exports[`on tweet only entities 1`] = `
 "
-  <img height=\\"16\\" width=\\"16\\" src=\\"http://example.com/profile.png\\">
-  <b>Alice Liddell</b> (<a href=\\"https://twitter.com/alice\\">@alice</a>)<br>
-
   <p>
-      hello from the wonderland
-
-    (<a href=\\"https://twitter.com/alice/status/TWEET_ID\\">link</a>)
+    <img height=\\"16\\" width=\\"16\\" src=\\"http://example.com/profile.png\\">
+    <b>Alice Liddell</b>
+    <a href=\\"https://twitter.com/alice\\" class=\\"text-muted\\">@alice</a>
+    <span class=\\"text-muted\\">·</span>
+    <a href=\\"https://twitter.com/alice/status/TWEET_ID\\" class=\\"text-muted\\">permalink</a>
   </p>
+
+      <p>hello from the wonderland</p>
 
     <ul class=\\"list-inline\\">
         <li>
@@ -47,12 +49,13 @@ exports[`on tweet only entities 1`] = `
 
 exports[`on tweet simple 1`] = `
 "
-  <img height=\\"16\\" width=\\"16\\" src=\\"http://example.com/profile.png\\">
-  <b>Alice Liddell</b> (<a href=\\"https://twitter.com/alice\\">@alice</a>)<br>
-
   <p>
-      hello from the wonderland
+    <img height=\\"16\\" width=\\"16\\" src=\\"http://example.com/profile.png\\">
+    <b>Alice Liddell</b>
+    <a href=\\"https://twitter.com/alice\\" class=\\"text-muted\\">@alice</a>
+    <span class=\\"text-muted\\">·</span>
+    <a href=\\"https://twitter.com/alice/status/TWEET_ID\\" class=\\"text-muted\\">permalink</a>
+  </p>
 
-    (<a href=\\"https://twitter.com/alice/status/TWEET_ID\\">link</a>)
-  </p>"
+      <p>hello from the wonderland</p>"
 `;
