@@ -21,17 +21,17 @@ const template = Handlebars.compile(`
     (<a href="https://twitter.com/{{user.screen_name}}/status/{{id_str}}">link</a>)
   </p>
 
-  {{#if (or extended_entities.media entities.media)}}
+  {{#with (or extended_entities.media entities.media) as |objs|}}
     <ul class="list-inline">
-      {{#each (or extended_entities.media entities.media) as |media|}}
+      {{#each objs as |obj|}}
         <li>
-          <a href="{{media.expanded_url}}">
-            <img src="{{flecktarn-url media.media_url_https}}" alt="">
+          <a href="{{obj.expanded_url}}">
+            <img src="{{flecktarn-url obj.media_url_https}}" alt="">
           </a>
         </li>
       {{/each}}
     </ul>
-  {{/if}}
+  {{/with}}
 `)
 
 function log(fn) {
