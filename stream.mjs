@@ -33,10 +33,10 @@ const template = Handlebars.compile(`
   {{/if}}
 `)
 
-function log(...args) {
+function log(fn) {
   if (process.env.NODE_ENV === 'test') { return }
 
-  console.log(...args)
+  console.log(fn())
 }
 
 export default function(config) {
@@ -51,7 +51,7 @@ export default function(config) {
       if (!payload.user) { return }
       if (!config.twitter.followIds.includes(payload.user.id_str)) { return }
 
-      log(`https://twitter.com/${payload.user.screen_name}/status/${payload.id_str}`)
+      log(() => JSON.stringify(payload, null, '  '))
 
       await fetch(config.idobata.hookUrl, {
         method: 'post',
