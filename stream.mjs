@@ -14,7 +14,7 @@ const template = Handlebars.compile(`
     <b>{{user.name}}</b>
     <a href="https://twitter.com/{{user.screen_name}}" class="text-muted">@{{user.screen_name}}</a>
     <span class="text-muted">·</span>
-    <a href="https://twitter.com/{{user.screen_name}}/status/{{id_str}}" class="text-muted">permalink</a>
+    <a href="https://twitter.com/{{user.screen_name}}/status/{{id_str}}" class="text-muted">source</a>
   </div>
 
   {{#if extended_tweet}}
