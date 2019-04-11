@@ -6,6 +6,7 @@ import { createFlecktarnUrl } from './util'
 
 Handlebars.registerHelper('slice', (str, pos) => pos ? str.slice(pos[0], pos[1]) : str)
 Handlebars.registerHelper('or', (x, y) => x || y)
+Handlebars.registerHelper('ln2br', (str) => str.replace(/\n/g, '<br>'))
 
 const template = Handlebars.compile(`
   <div>
@@ -18,11 +19,11 @@ const template = Handlebars.compile(`
 
   {{#if extended_tweet}}
     {{#with (slice extended_tweet.full_text extended_tweet.display_text_range) as |text|}}
-      <p>{{{text}}}</p>
+      <p>{{{ln2br text}}}</p>
     {{/with}}
   {{else}}
     {{#with (slice text display_text_range) as |text|}}
-      <p>{{{text}}}</p>
+      <p>{{{ln2br text}}}</p>
     {{/with}}
   {{/if}}
 

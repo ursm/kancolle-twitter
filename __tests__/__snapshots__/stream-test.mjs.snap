@@ -36,7 +36,7 @@ exports[`on tweet simple 1`] = `
     <a href=\\"https://twitter.com/alice/status/TWEET_ID\\" class=\\"text-muted\\">permalink</a>
   </div>
 
-      <p>hello from the wonderland</p>
+      <p>hello from<br>the wonderland</p>
 
     <ul class=\\"list-inline\\">
         <li>

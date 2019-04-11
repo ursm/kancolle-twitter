@@ -64,7 +64,7 @@ describe('on tweet', () => {
         screen_name: 'alice',
       },
       id_str: 'TWEET_ID',
-      text: 'hello from the wonderland',
+      text: "hello from\nthe wonderland",
       extended_entities: {
         media: [
           {
