@@ -70,12 +70,24 @@ describe('on tweet', () => {
           {
             type: 'photo',
             media_url_https: 'http://example.com/photo/1.jpg',
-            expanded_url: 'http://example.com/photo/1'
+            expanded_url: 'http://example.com/photo/1',
+            sizes: {
+              medium: {
+                w: 1,
+                h: 2
+              }
+            }
           },
           {
             type: 'video',
             media_url_https: 'http://example.com/video-thumbnail/1.jpg',
-            expanded_url: 'http://example.com/video/1'
+            expanded_url: 'http://example.com/video/1',
+            sizes: {
+              medium: {
+                w: 3,
+                h: 4
+              }
+            }
           }
         ]
       }
@@ -112,12 +124,24 @@ describe('on tweet', () => {
             {
               type: 'photo',
               media_url_https: 'http://example.com/photo/1.jpg',
-              expanded_url: 'http://example.com/photo/1'
+              expanded_url: 'http://example.com/photo/1',
+              sizes: {
+                medium: {
+                  w: 1,
+                  h: 2
+                }
+              }
             },
             {
               type: 'video',
               media_url_https: 'http://example.com/video-thumbnail/1.jpg',
-              expanded_url: 'http://example.com/video/1'
+              expanded_url: 'http://example.com/video/1',
+              sizes: {
+                medium: {
+                  w: 3,
+                  h: 4
+                }
+              }
             }
           ]
         }

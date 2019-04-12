@@ -32,7 +32,7 @@ const template = Handlebars.compile(`
       {{#each objs as |obj|}}
         <li>
           <a href="{{obj.expanded_url}}">
-            <img src="{{flecktarn-url obj.media_url_https}}" alt="">
+            <img src="{{flecktarn-url obj.media_url_https}}" width="{{obj.sizes.medium.w}}" height="{{obj.sizes.medium.h}}" alt="">
           </a>
         </li>
       {{/each}}

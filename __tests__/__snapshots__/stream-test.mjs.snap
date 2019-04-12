@@ -15,12 +15,12 @@ exports[`on tweet extended 1`] = `
     <ul class=\\"list-inline\\">
         <li>
           <a href=\\"http://example.com/photo/1\\">
-            <img src=\\"http://example.com/flecktarn/sr9FHUzSnLCFqNKFQF0XxTnt945OZ7T8QThH8A/http%3A%2F%2Fexample.com%2Fphoto%2F1.jpg\\" alt=\\"\\">
+            <img src=\\"http://example.com/flecktarn/sr9FHUzSnLCFqNKFQF0XxTnt945OZ7T8QThH8A/http%3A%2F%2Fexample.com%2Fphoto%2F1.jpg\\" width=\\"1\\" height=\\"2\\" alt=\\"\\">
           </a>
         </li>
         <li>
           <a href=\\"http://example.com/video/1\\">
-            <img src=\\"http://example.com/flecktarn/OrZAmsZyZb_39gAn4-NSiY24MerfSvK1ymIxIQ/http%3A%2F%2Fexample.com%2Fvideo-thumbnail%2F1.jpg\\" alt=\\"\\">
+            <img src=\\"http://example.com/flecktarn/OrZAmsZyZb_39gAn4-NSiY24MerfSvK1ymIxIQ/http%3A%2F%2Fexample.com%2Fvideo-thumbnail%2F1.jpg\\" width=\\"3\\" height=\\"4\\" alt=\\"\\">
           </a>
         </li>
     </ul>"
@@ -41,12 +41,12 @@ exports[`on tweet simple 1`] = `
     <ul class=\\"list-inline\\">
         <li>
           <a href=\\"http://example.com/photo/1\\">
-            <img src=\\"http://example.com/flecktarn/sr9FHUzSnLCFqNKFQF0XxTnt945OZ7T8QThH8A/http%3A%2F%2Fexample.com%2Fphoto%2F1.jpg\\" alt=\\"\\">
+            <img src=\\"http://example.com/flecktarn/sr9FHUzSnLCFqNKFQF0XxTnt945OZ7T8QThH8A/http%3A%2F%2Fexample.com%2Fphoto%2F1.jpg\\" width=\\"1\\" height=\\"2\\" alt=\\"\\">
           </a>
         </li>
         <li>
           <a href=\\"http://example.com/video/1\\">
-            <img src=\\"http://example.com/flecktarn/OrZAmsZyZb_39gAn4-NSiY24MerfSvK1ymIxIQ/http%3A%2F%2Fexample.com%2Fvideo-thumbnail%2F1.jpg\\" alt=\\"\\">
+            <img src=\\"http://example.com/flecktarn/OrZAmsZyZb_39gAn4-NSiY24MerfSvK1ymIxIQ/http%3A%2F%2Fexample.com%2Fvideo-thumbnail%2F1.jpg\\" width=\\"3\\" height=\\"4\\" alt=\\"\\">
           </a>
         </li>
     </ul>"
