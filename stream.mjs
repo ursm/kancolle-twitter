@@ -8,7 +8,7 @@ Handlebars.registerHelper('slice', (str, pos) => pos ? str.slice(pos[0], pos[1])
 Handlebars.registerHelper('or', (x, y) => x || y)
 Handlebars.registerHelper('ln2br', (str) => str.replace(/\n/g, '<br>'))
 
-const template = Handlebars.compile(`
+Handlebars.registerPartial('tweet-header', `
   <div>
     <img height="16" width="16" src="{{user.profile_image_url_https}}">
     <b>{{user.name}}</b>
@@ -16,7 +16,9 @@ const template = Handlebars.compile(`
     <span class="text-muted">·</span>
     <a href="https://twitter.com/{{user.screen_name}}/status/{{id_str}}" class="text-muted">source</a>
   </div>
+`)
 
+Handlebars.registerPartial('tweet-body', `
   {{#if extended_tweet}}
     {{#with (slice extended_tweet.full_text extended_tweet.display_text_range) as |text|}}
       <p>{{{ln2br text}}}</p>
@@ -38,6 +40,21 @@ const template = Handlebars.compile(`
       {{/each}}
     </ul>
   {{/with}}
+`)
+
+const template = Handlebars.compile(`
+  {{> tweet-header }}
+
+  {{#if retweeted_status}}
+    <div class="panel panel-default">
+      <div class="panel-body">
+        {{> tweet-header retweeted_status }}
+        {{> tweet-body retweeted_status }}
+      </div>
+    </div>
+  {{else}}
+    {{> tweet-body }}
+  {{/if}}
 `)
 
 function log(fn) {
