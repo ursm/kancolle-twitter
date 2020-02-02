@@ -1,4 +1,4 @@
-import createStream from './stream'
+import createStream from './stream.mjs'
 
 const stream = createStream({
   idobata: {

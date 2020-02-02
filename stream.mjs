@@ -2,7 +2,7 @@ import Handlebars from 'handlebars'
 import Twitter from 'twitter-lite'
 import fetch from 'node-fetch'
 
-import { createFlecktarnUrl } from './util'
+import { createFlecktarnUrl } from './util.mjs'
 
 Handlebars.registerHelper('slice', (str, pos) => pos ? str.slice(pos[0], pos[1]) : str)
 Handlebars.registerHelper('or', (x, y) => x || y)

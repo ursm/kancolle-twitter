@@ -2,8 +2,8 @@ import EventEmitter from 'events'
 import Twitter from 'twitter-lite'
 import fetch from 'node-fetch'
 
-import createStream from '../stream'
-import { createFlecktarnUrl } from '../util'
+import createStream from '../stream.mjs'
+import { createFlecktarnUrl } from '../util.mjs'
 
 const mockStream = jest.fn().mockImplementation(() => new EventEmitter())
 
