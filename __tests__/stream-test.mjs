@@ -3,7 +3,6 @@ import Twitter from 'twitter-lite'
 import fetch from 'node-fetch'
 
 import createStream from '../stream.mjs'
-import { createFlecktarnUrl } from '../util.mjs'
 
 const mockStream = jest.fn().mockImplementation(() => new EventEmitter())
 
@@ -57,14 +56,16 @@ describe('on tweet', () => {
 
   test('simple', () => {
     stream.emit('data', {
+      id_str: 'TWEET_ID',
+      text: "hello from\nthe wonderland",
+
       user: {
         id_str: 'FOLLOW_1',
         profile_image_url_https: 'http://example.com/profile.png',
         name: 'Alice Liddell',
         screen_name: 'alice',
       },
-      id_str: 'TWEET_ID',
-      text: "hello from\nthe wonderland",
+
       extended_entities: {
         media: [
           {
@@ -108,17 +109,20 @@ describe('on tweet', () => {
 
   test('extended', () => {
     stream.emit('data', {
+      id_str: 'TWEET_ID',
+      text: 'hello from the wonderland',
+
       user: {
         id_str: 'FOLLOW_2',
         profile_image_url_https: 'http://example.com/profile.png',
         name: 'Alice Liddell',
         screen_name: 'alice',
       },
-      id_str: 'TWEET_ID',
-      text: 'hello from the wonderland',
+
       extended_tweet: {
         full_text: 'Alice taking "Drink Me" bottle',
         display_text_range: [13, 23],
+
         extended_entities: {
           media: [
             {
@@ -144,6 +148,70 @@ describe('on tweet', () => {
               }
             }
           ]
+        }
+      }
+    })
+
+    expect(fetch).toHaveBeenCalledTimes(1)
+
+    const [, {body}] = fetch.mock.calls[0]
+    const {source} = JSON.parse(body)
+
+    expect(source).toMatchSnapshot()
+  })
+
+  test('retweet', () => {
+    stream.emit('data', {
+      id_str: 'TWEET_ID',
+
+      user: {
+        id_str: 'FOLLOW_2',
+        profile_image_url_https: 'http://example.com/profile.png',
+        name: 'Alice Liddell',
+        screen_name: 'alice',
+      },
+
+      retweeted_status: {
+        id_str: 'RETWEET_ID',
+        text: 'hello from the wonderland',
+
+        user: {
+          id_str: 'LEWIS_ID',
+          profile_image_url_https: 'http://example.com/lewis.png',
+          name: 'Lewis Carroll',
+          screen_name: 'lewis',
+        },
+
+        extended_tweet: {
+          full_text: 'Alice taking "Drink Me" bottle',
+          display_text_range: [13, 23],
+
+          extended_entities: {
+            media: [
+              {
+                type: 'photo',
+                media_url_https: 'http://example.com/photo/1.jpg',
+                expanded_url: 'http://example.com/photo/1',
+                sizes: {
+                  medium: {
+                    w: 1,
+                    h: 2
+                  }
+                }
+              },
+              {
+                type: 'video',
+                media_url_https: 'http://example.com/video-thumbnail/1.jpg',
+                expanded_url: 'http://example.com/video/1',
+                sizes: {
+                  medium: {
+                    w: 3,
+                    h: 4
+                  }
+                }
+              }
+            ]
+          }
         }
       }
     })

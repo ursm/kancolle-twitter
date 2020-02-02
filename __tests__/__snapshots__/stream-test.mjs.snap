@@ -28,6 +28,46 @@ exports[`on tweet extended 1`] = `
         </ul>"
 `;
 
+exports[`on tweet retweet 1`] = `
+"
+  
+    <div>
+      <img height=\\"16\\" width=\\"16\\" src=\\"http://example.com/profile.png\\">
+      <b>Alice Liddell</b>
+      <a href=\\"https://twitter.com/alice\\" class=\\"text-muted\\">@alice</a>
+      <span class=\\"text-muted\\">·</span>
+      <a href=\\"https://twitter.com/alice/status/TWEET_ID\\" class=\\"text-muted\\">source</a>
+    </div>
+
+    <div class=\\"panel panel-default\\">
+      <div class=\\"panel-body\\">
+        
+          <div>
+            <img height=\\"16\\" width=\\"16\\" src=\\"http://example.com/lewis.png\\">
+            <b>Lewis Carroll</b>
+            <a href=\\"https://twitter.com/lewis\\" class=\\"text-muted\\">@lewis</a>
+            <span class=\\"text-muted\\">·</span>
+            <a href=\\"https://twitter.com/lewis/status/RETWEET_ID\\" class=\\"text-muted\\">source</a>
+          </div>
+        
+              <p>\\"Drink Me\\"</p>
+        
+            <ul class=\\"list-inline\\">
+                <li>
+                  <a href=\\"http://example.com/photo/1\\">
+                    <img src=\\"http://example.com/flecktarn/sr9FHUzSnLCFqNKFQF0XxTnt945OZ7T8QThH8A/http%3A%2F%2Fexample.com%2Fphoto%2F1.jpg\\" width=\\"1\\" height=\\"2\\" alt=\\"\\">
+                  </a>
+                </li>
+                <li>
+                  <a href=\\"http://example.com/video/1\\">
+                    <img src=\\"http://example.com/flecktarn/OrZAmsZyZb_39gAn4-NSiY24MerfSvK1ymIxIQ/http%3A%2F%2Fexample.com%2Fvideo-thumbnail%2F1.jpg\\" width=\\"3\\" height=\\"4\\" alt=\\"\\">
+                  </a>
+                </li>
+            </ul>
+      </div>
+    </div>"
+`;
+
 exports[`on tweet simple 1`] = `
 "
   
